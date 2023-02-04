@@ -10,6 +10,8 @@
 #include "wifi.h"
 #include "mqtt.h"
 
+#include "rotary.h"
+
 SemaphoreHandle_t conexaoWifiSemaphore;
 SemaphoreHandle_t conexaoMQTTSemaphore;
 
@@ -49,6 +51,7 @@ void app_main(void)
     }
     ESP_ERROR_CHECK(ret);
     
+    control_rotary_decoder();
     // conexaoWifiSemaphore = xSemaphoreCreateBinary();
     // conexaoMQTTSemaphore = xSemaphoreCreateBinary();
     // wifi_start();
