@@ -56,5 +56,7 @@ void app_main(void)
     xTaskCreate(control_rotary_decoder, "Controle do Rotary", 4096, NULL, 1, NULL);
     xTaskCreate(&conectadoWifi,  "Conexão ao MQTT", 4096, NULL, 1, NULL);
     xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
-    xTaskCreate(pwm, "Controle LED", 4096, NULL, 1, NULL);
+    xTaskCreate(pwm_r, "Controle LED Vermelho", 4096, NULL, 1, NULL);
+    xTaskCreate(pwm_g, "Controle LED Verde", 4096, NULL, 1, NULL);
+    xTaskCreate(pwm_b, "Controle LED Azul", 4096, NULL, 1, NULL);
 }
