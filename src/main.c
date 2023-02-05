@@ -30,13 +30,11 @@ void conectadoWifi(void * params)
 void trataComunicacaoComServidor(void * params)
 {
   char mensagem[50];
-  if(xSemaphoreTake(conexaoMQTTSemaphore, portMAX_DELAY))
-  {
-    while(true)
-    {
-       sprintf(mensagem, "{\"potencia\": 22}");
-       mqtt_envia_mensagem("v1/devices/me/attributes", mensagem);
-       vTaskDelay(3000 / portTICK_PERIOD_MS);
+  if(xSemaphoreTake(conexaoMQTTSemaphore, portMAX_DELAY)) {
+    while(true) {
+      sprintf(mensagem, "{\"potencia\": %d}", rotary_counter);
+      mqtt_envia_mensagem("v1/devices/me/attributes", mensagem);
+      vTaskDelay(3000 / portTICK_PERIOD_MS);
     }
   }
 }
@@ -51,11 +49,11 @@ void app_main(void)
     }
     ESP_ERROR_CHECK(ret);
     
-    control_rotary_decoder();
-    // conexaoWifiSemaphore = xSemaphoreCreateBinary();
-    // conexaoMQTTSemaphore = xSemaphoreCreateBinary();
-    // wifi_start();
+    conexaoWifiSemaphore = xSemaphoreCreateBinary();
+    conexaoMQTTSemaphore = xSemaphoreCreateBinary();
+    wifi_start();
 
-    // xTaskCreate(&conectadoWifi,  "Conexão ao MQTT", 4096, NULL, 1, NULL);
-    // xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
+    xTaskCreate(control_rotary_decoder, "Controle do Rotary", 4096, NULL, 1, NULL);
+    xTaskCreate(&conectadoWifi,  "Conexão ao MQTT", 4096, NULL, 1, NULL);
+    xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
 }

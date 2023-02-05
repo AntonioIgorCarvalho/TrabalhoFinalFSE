@@ -5,6 +5,7 @@
 
 #define ROTARY_PIN_A 13
 #define ROTARY_PIN_B 14
+
 int rotary_counter = 0;
 
 void control_rotary_decoder() {
@@ -24,12 +25,15 @@ void control_rotary_decoder() {
 
     if(levelA != lastA){
       if(levelA == levelB){
-        rotary_counter++;
+        if(rotary_counter < 100){
+          rotary_counter++;
+        }
       }
       else {
-        rotary_counter--;
+        if(rotary_counter > 0){
+          rotary_counter--;
+        }
       }
-      printf("Contagem: %d\n", rotary_counter);
     }
 
     lastA = levelA;
