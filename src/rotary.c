@@ -3,8 +3,8 @@
 #include <freertos/task.h>
 #include <driver/gpio.h>
 
-#define ROTARY_PIN_A 13
-#define ROTARY_PIN_B 14
+#define ROTARY_PIN_A 2
+#define ROTARY_PIN_B 4
 
 int rotary_counter = 0;
 
