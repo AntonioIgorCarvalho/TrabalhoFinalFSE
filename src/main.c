@@ -9,7 +9,7 @@
 
 #include "wifi.h"
 #include "mqtt.h"
-
+#include "led.h"
 #include "rotary.h"
 
 SemaphoreHandle_t conexaoWifiSemaphore;
@@ -56,4 +56,5 @@ void app_main(void)
     xTaskCreate(control_rotary_decoder, "Controle do Rotary", 4096, NULL, 1, NULL);
     xTaskCreate(&conectadoWifi,  "Conexão ao MQTT", 4096, NULL, 1, NULL);
     xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
+    xTaskCreate(pwm, "Controle LED", 4096, NULL, 1, NULL);
 }

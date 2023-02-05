@@ -25,7 +25,7 @@ void control_rotary_decoder() {
 
     if(levelA != lastA){
       if(levelA == levelB){
-        if(rotary_counter < 100){
+        if(rotary_counter < 255){
           rotary_counter++;
         }
       }
