@@ -1,4 +1,5 @@
 #include "rotary.h"
+#include "mqtt.h"
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <driver/gpio.h>
@@ -25,15 +26,35 @@ void control_rotary_decoder() {
     int levelA = gpio_get_level(ROTARY_PIN_A);
     int levelB = gpio_get_level(ROTARY_PIN_B);
 
-    if(levelA != lastA){
-      if(levelA == levelB){
-        if(rotary_b < 255){
-          rotary_b++;
+    if(activeMax == 't'){
+      rotary_r = rotary_g = rotary_b = 255;
+    }
+    else if (activeMin == 't'){
+      rotary_r = rotary_g = rotary_b = 0;
+    }
+    else {
+      if(levelA != lastA){
+        if(levelA == levelB){
+          if(activeR == 't' && rotary_r < 255){
+            rotary_r++;
+          }
+          if(activeG == 't' && rotary_g < 255){
+            rotary_g++;
+          }
+          if(activeB == 't' && rotary_b < 255){
+            rotary_b++;
+          }
         }
-      }
-      else {
-        if(rotary_b > 0){
-          rotary_b--;
+        else {
+          if(activeR == 't' && rotary_r  > 0){
+            rotary_r--;
+          }
+          if(activeG == 't' && rotary_g  > 0){
+            rotary_g--;
+          }
+          if(activeB == 't' && rotary_b  > 0){
+            rotary_b--;
+          }
         }
       }
     }
@@ -41,4 +62,5 @@ void control_rotary_decoder() {
     lastA = levelA;
     vTaskDelay(40 / portTICK_PERIOD_MS);
   }
+    
 }

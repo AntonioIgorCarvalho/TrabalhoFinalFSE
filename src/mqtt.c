@@ -26,6 +26,12 @@
 extern SemaphoreHandle_t conexaoMQTTSemaphore;
 esp_mqtt_client_handle_t client;
 
+char activeR = 'f';
+char activeG = 'f';
+char activeB = 'f';
+char activeMax = 'f';
+char activeMin = 'f';
+
 static void log_error_if_nonzero(const char *message, int error_code)
 {
     if (error_code != 0) {
@@ -111,13 +117,42 @@ void handle_data(char *data){
 
     cJSON* params = cJSON_GetObjectItem(json, "params");
 
+    cJSON* valueMax = cJSON_GetObjectItem(params, "ledmax");
+    cJSON* valueMin = cJSON_GetObjectItem(params, "ledmin");
+    cJSON* desmarcarLeds = cJSON_GetObjectItem(params, "desmarcarleds");
     cJSON* valueR = cJSON_GetObjectItem(params, "ledr");
     cJSON* valueG = cJSON_GetObjectItem(params, "ledg");
     cJSON* valueB = cJSON_GetObjectItem(params, "ledb");
-    cJSON* valueMax = cJSON_GetObjectItem(params, "ledmax");
-    cJSON* valueMin = cJSON_GetObjectItem(params, "ledmin");
 
-    printf("The value of \"ledr\" is: %s\n", cJSON_IsTrue(valueR) ? "true" : "false");
+    if(cJSON_IsTrue(valueMax)){
+        activeMax = 't';
+    }
+    else {
+        activeMax = 'f';
+    }
+
+    if(cJSON_IsTrue(valueMin)){
+        activeMin = 't';
+    }
+    else {
+        activeMin = 'f';
+    }
+
+    if(cJSON_IsTrue(desmarcarLeds)){
+        activeR = 'f';
+        activeG = 'f';
+        activeB = 'f';
+    }
+
+    if(cJSON_IsTrue(valueR)){
+        activeR = 't';
+    }
+    if(cJSON_IsTrue(valueG)){
+        activeG = 't';
+    }
+    if(cJSON_IsTrue(valueB)){
+        activeB = 't';
+    }
 
     cJSON_Delete(json);
 }
