@@ -6,7 +6,9 @@
 #define ROTARY_PIN_A 2
 #define ROTARY_PIN_B 4
 
-int rotary_counter = 0;
+int rotary_r = 0;
+int rotary_g = 0;
+int rotary_b = 0;
 
 void control_rotary_decoder() {
   gpio_config_t io_conf;
@@ -25,13 +27,13 @@ void control_rotary_decoder() {
 
     if(levelA != lastA){
       if(levelA == levelB){
-        if(rotary_counter < 255){
-          rotary_counter++;
+        if(rotary_b < 255){
+          rotary_b++;
         }
       }
       else {
-        if(rotary_counter > 0){
-          rotary_counter--;
+        if(rotary_b > 0){
+          rotary_b--;
         }
       }
     }

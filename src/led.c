@@ -25,15 +25,19 @@ void pwm_b(){
 void pwm(char led) {
 
 int led_channel;
+int other_channels;
 
 if(led == 'r'){
     led_channel = LED_R;
+    other_channels = 0;
 }
 else if(led == 'g'){
     led_channel = LED_G;
+    other_channels = 2;
 }
 else if(led == 'b'){
     led_channel = LED_B;
+    other_channels = 3;
 }
 else {
     return;
@@ -43,7 +47,7 @@ else {
   ledc_timer_config_t timer_config = {
     .speed_mode = LEDC_LOW_SPEED_MODE,
     .duty_resolution = LEDC_TIMER_8_BIT,
-    .timer_num = LEDC_TIMER_0,
+    .timer_num = other_channels,
     .freq_hz = 1000,
     .clk_cfg = LEDC_AUTO_CLK
   };
@@ -53,8 +57,8 @@ else {
   ledc_channel_config_t channel_config_r = {
     .gpio_num = led_channel,
     .speed_mode = LEDC_LOW_SPEED_MODE,
-    .channel = LEDC_CHANNEL_0,
-    .timer_sel = LEDC_TIMER_0,
+    .channel = other_channels,
+    .timer_sel = other_channels,
     .duty = 0,
     .hpoint = 0
   };
@@ -62,6 +66,14 @@ else {
 
   ledc_fade_func_install(0);
   while(true) {
-    ledc_set_fade_time_and_start(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, rotary_counter, 1000, LEDC_FADE_WAIT_DONE);
+    if(led == 'r') {
+      ledc_set_fade_time_and_start(LEDC_LOW_SPEED_MODE, other_channels, rotary_r, 1000, LEDC_FADE_WAIT_DONE);
+    }
+    else if(led == 'g') {
+      ledc_set_fade_time_and_start(LEDC_LOW_SPEED_MODE, other_channels, rotary_g, 1000, LEDC_FADE_WAIT_DONE);
+    }
+    else if(led == 'b') {
+      ledc_set_fade_time_and_start(LEDC_LOW_SPEED_MODE, other_channels, rotary_b, 1000, LEDC_FADE_WAIT_DONE);
+    }
   }
 }

@@ -32,7 +32,13 @@ void trataComunicacaoComServidor(void * params)
   char mensagem[50];
   if(xSemaphoreTake(conexaoMQTTSemaphore, portMAX_DELAY)) {
     while(true) {
-      sprintf(mensagem, "{\"potencia\": %d}", rotary_counter);
+      sprintf(mensagem, "{\"potencia_vermelho\": %d}", rotary_r);
+      mqtt_envia_mensagem("v1/devices/me/attributes", mensagem);
+
+      sprintf(mensagem, "{\"potencia_verde\": %d}", rotary_g);
+      mqtt_envia_mensagem("v1/devices/me/attributes", mensagem);
+
+      sprintf(mensagem, "{\"potencia_azul\": %d}", rotary_b);
       mqtt_envia_mensagem("v1/devices/me/attributes", mensagem);
       vTaskDelay(3000 / portTICK_PERIOD_MS);
     }
