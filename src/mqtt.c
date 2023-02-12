@@ -19,6 +19,7 @@
 #include "mqtt_client.h"
 
 #include "mqtt.h"
+#include "cJSON.h"
 
 #define TAG "MQTT"
 
@@ -63,6 +64,9 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         ESP_LOGI(TAG, "MQTT_EVENT_DATA");
         printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
         printf("DATA=%.*s\r\n", event->data_len, event->data);
+
+        handle_data(event->data);
+
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
@@ -95,4 +99,25 @@ void mqtt_envia_mensagem(char * topico, char * mensagem)
 {
     int message_id = esp_mqtt_client_publish(client, topico, mensagem, 0, 1, 0);
     ESP_LOGI(TAG, "Mensagem enviada, ID: %d", message_id);
+}
+
+void handle_data(char *data){
+    cJSON* json = cJSON_Parse(data);
+
+    if (json == NULL) {
+        printf("Error parsing JSON: %s\n", cJSON_GetErrorPtr());
+        return;
+    }
+
+    cJSON* params = cJSON_GetObjectItem(json, "params");
+
+    cJSON* valueR = cJSON_GetObjectItem(params, "ledr");
+    cJSON* valueG = cJSON_GetObjectItem(params, "ledg");
+    cJSON* valueB = cJSON_GetObjectItem(params, "ledb");
+    cJSON* valueMax = cJSON_GetObjectItem(params, "ledmax");
+    cJSON* valueMin = cJSON_GetObjectItem(params, "ledmin");
+
+    printf("The value of \"ledr\" is: %s\n", cJSON_IsTrue(valueR) ? "true" : "false");
+
+    cJSON_Delete(json);
 }
